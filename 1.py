@@ -1,2 +1,4 @@
-print("hello world")
-print("hello world")
+def generate():
+    return [i for i in range(9)]
+
+print(generate())
