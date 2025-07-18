@@ -1,4 +1,6 @@
 import random
+import math
+
 def generate():
     arr = [i for i in range(9)]
     shuffled = arr[:]
@@ -21,8 +23,28 @@ def print_board(arr):
             print(arr[j+i*3], end=" ")
         print()
 
+# def shift_left():
+#     row = round(arr.index(0)/3)
+#     col
+
+    
+
 print(parity_checker(arr))
 print(arr)
 print_board(arr)
 
+
+print("hhhhhhhhhhhhhhh")
+# for i in range(len(arr)):
+#     row = math.floor(arr.index(i)/3)
+#     print(row)
+    
+print(arr[0]/3)
+print("hhhhhhhhhhhhhhh")
+
+# col finding replace i by index hew hwhw wh wwh
+for i in range(len(arr)):
+    row = math.floor(i/3)
+    col = i-(row*3)
+    print(col)
 
