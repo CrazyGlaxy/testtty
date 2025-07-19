@@ -1,5 +1,6 @@
 import random
 import math
+import pyxel
 
 class Board:
     def __init__(self):
@@ -10,7 +11,7 @@ class Board:
         shuffled = self.arr[:]
         random.shuffle(shuffled)
         self.arr = shuffled
-        self.arr[:] = [1,2,3,4,5,6,7,8,0]
+        # self.arr[:] = [1,2,3,4,5,6,7,8,0]
 
     def parity_checker(self):
         count = 0
@@ -36,13 +37,13 @@ class Board:
         row = self.row()
         col = self.col()
 
-        if direction == "left" and col != 0:
+        if direction == "right" and col != 0:
             target = row*3 + col - 1
-        elif direction == "right" and col != 2:
+        elif direction == "left" and col != 2:
             target = row*3 + col + 1
-        elif direction == "up" and row != 0:
+        elif direction == "down" and row != 0:
             target = row*3 + col - 3
-        elif direction == "down" and row != 2:
+        elif direction == "up" and row != 2:
             target = row*3 + col + 3
         else:
             return False
@@ -115,4 +116,85 @@ class Test:
         print("shift down:", board.shift_down())
         board.print_board()
         
-Test()
+# Test()
+
+class TileGrid:
+    board = Board()
+    arr = board.arr
+    def __init__(self):
+        pyxel.init(96, 96)
+        self.tile_size = 32
+
+        # 3x3 grid stored as a flat list (row-major)
+        # 0 = blank tile
+        self.tiles = self.arr
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        # Keyboard input for arrow keys
+        if pyxel.btnp(pyxel.KEY_LEFT):
+            self.board.shift_left()
+        elif pyxel.btnp(pyxel.KEY_RIGHT):
+            self.board.shift_right()
+        elif pyxel.btnp(pyxel.KEY_UP):
+            self.board.shift_up()
+        elif pyxel.btnp(pyxel.KEY_DOWN):
+            self.board.shift_down()
+
+        # Mouse click input to move tiles
+        elif pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
+            mouse_x = pyxel.mouse_x
+            mouse_y = pyxel.mouse_y
+
+            col = mouse_x // self.tile_size
+            row = mouse_y // self.tile_size
+            clicked_index = row * 3 + col
+            blank_index = self.board.arr.index(0)
+
+            # Check if clicked tile is adjacent to blank tile
+            if clicked_index in self._get_adjacent(blank_index):
+                # Use your Board class to swap tiles by updating arr
+                self.board.arr[blank_index], self.board.arr[clicked_index] = (
+                    self.board.arr[clicked_index],
+                    self.board.arr[blank_index],
+                )
+
+    def _get_adjacent(self, index):
+        adj = []
+        row = index // 3
+        col = index % 3
+
+        if col > 0:
+            adj.append(index - 1)  # left neighbor
+        if col < 2:
+            adj.append(index + 1)  # right neighbor
+        if row > 0:
+            adj.append(index - 3)  # top neighbor
+        if row < 2:
+            adj.append(index + 3)  # bottom neighbor
+
+        return adj
+
+
+
+    def draw(self):
+        pyxel.cls(0)
+
+        for i in range(9):
+            value = self.tiles[i]
+            row = i // 3
+            col = i % 3
+            x = col * self.tile_size
+            y = row * self.tile_size
+
+            if value != 0:
+                # Draw filled tile
+                pyxel.rect(x, y, self.tile_size, self.tile_size, 5)  # filled tile (color 5)
+                pyxel.text(x + 12, y + 12, str(value), 7)  # draw tile number
+            else:
+                # Draw empty tile border
+                pyxel.rectb(x, y, self.tile_size, self.tile_size, 1)
+
+TileGrid()
+
