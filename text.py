@@ -8,5 +8,10 @@ print(n)
 P.po(n)
 
 
-for i in range(2):
+
+
+pairs = [[1, 2], [3, 4], [5, 6]]
+
+for i, j in pairs:
     print(i)
+    print(j)

@@ -14,7 +14,7 @@ class Board:
         shuffled = self.arr[:]
         random.shuffle(shuffled)
         self.arr = shuffled
-        # self.arr[:] = [1,2,3,4,5,6,7,8,0]
+        self.arr[:] = [1,2,3,4,5,6,7,8,0]
 
     def parity_checker(self):
         count = 0
@@ -68,6 +68,16 @@ class Board:
     def shift_down(self):
         return self.shift("down")
     
+
+    #neib
+    def neighbor(self): 
+        i = self.row()
+        j = self.col()
+        neighbor = []
+        for i, j in [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]:
+            if i>=0 and j>=0 and i<len(self.arr)**.5 and j<len(self.arr)**.5:
+                neighbor.append([i,j])
+        print(neighbor)
 
 # board = Board()
 # board.print_board()
@@ -202,4 +212,5 @@ class TileGrid:
 # TileGrid()
 board = Board()
 print(board.parity_checker())
+board.neighbor()
 
