@@ -74,10 +74,16 @@ class Board:
         i = self.row()
         j = self.col()
         neighbor = []
-        for i, j in [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]:
-            if i>=0 and j>=0 and i<len(self.arr)**.5 and j<len(self.arr)**.5:
+        neighborBoard = []
+        tempBoard = self.arr
+
+        for row, col in [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]:
+            if row>=0 and col>=0 and row<len(self.arr)**.5 and col<len(self.arr)**.5:
                 neighbor.append([i,j])
-        print(neighbor)
+        for times in range(len(neighbor)):
+            tempBoard[i*(int(len(self.arr)**.5))+j] , tempBoard[row*(int(len(self.arr)**.5))+col] = tempBoard[row*(int(len(self.arr)**.5))+col] , tempBoard[i*(int(len(self.arr)**.5))+j]
+            neighborBoard.append(tempBoard)
+        return neighborBoard
 
 # board = Board()
 # board.print_board()
@@ -90,11 +96,12 @@ class Board:
 class Search:
     def __init__(self, board: Board):
         self.board = board
-        self.frontier = [[board.arr]]
+        self.frontier = [board.arr]
         self.completed = []
 
-    def frontier(self):
-        if x in frontier for x in 
+    def frontierGen(self):
+        self.frontier.extend(state for state in self.board.neighbor() if state not in self.completed)
+        print(self.frontier)
     
 class Test:
     def __init__(self):
@@ -221,5 +228,7 @@ class TileGrid:
 # TileGrid()
 board = Board()
 print(board.parity_checker())
-board.neighbor()
+search = Search(board)
+search.frontierGen()
 
+print(board.neighbor())
