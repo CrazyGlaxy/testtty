@@ -1,17 +1,5 @@
-class P:
-    x = 2
-    def po(self):
-        print(self.x)
+print("hello")
+pairs = [[0,1],[1, 2], [3, 4], [5, 6]]
+x = [[1, 2], [3, 4], [5, 6]]
 
-n = P()
-print(n)
-P.po(n)
-
-
-
-
-pairs = [[1, 2], [3, 4], [5, 6]]
-
-for i, j in pairs:
-    print(i)
-    print(j)
+print([pair for pair in pairs if pair not in x])

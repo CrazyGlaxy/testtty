@@ -87,6 +87,15 @@ class Board:
 # print("row: ",board.row())
 # print("col: ", board.col())
 
+class Search:
+    def __init__(self, board: Board):
+        self.board = board
+        self.frontier = [[board.arr]]
+        self.completed = []
+
+    def frontier(self):
+        if x in frontier for x in 
+    
 class Test:
     def __init__(self):
         board = Board()
