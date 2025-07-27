@@ -5,6 +5,9 @@ import pyxel
 class Board:
     def __init__(self):
         self.generate()
+        while self.parity_checker() %2 != 0:
+            self.generate()
+            
 
     def generate(self)->None:
         self.arr = [i for i in range(9)]
@@ -196,5 +199,7 @@ class TileGrid:
                 # Draw empty tile border
                 pyxel.rectb(x, y, self.tile_size, self.tile_size, 1)
 
-TileGrid()
+# TileGrid()
+board = Board()
+print(board.parity_checker())
 
