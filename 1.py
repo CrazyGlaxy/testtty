@@ -29,16 +29,17 @@ class Board:
                 print(self.arr[j+i*3], end=" ")
             print()
 
+    @staticmethod
     def row(arr):
         return (arr.index(0)//3)
         
+    @staticmethod
     def col(arr):
-        index = arr.index(0)
-        return (index - self.row(arr)*3)
+        return arr.index(0)%3
 
     def shift(self, direction: str)->bool:
-        row = self.row()
-        col = self.col()
+        row = Board.row(self.arr)
+        col = Board.col(self.arr)
 
         if direction == "right" and col != 0:
             target = row*3 + col - 1
@@ -69,15 +70,7 @@ class Board:
         return self.shift("down")
     
 
-    #neibour
 
-
-    def printNei(self):
-        for k in range(len(self.neighbor())):
-            for i in range(3):
-                for j in range(3):
-                    print(self.arr[j+i*3], end=" ")
-                print()
 
 
 # board = Board()
@@ -94,27 +87,35 @@ class Search:
         self.frontier = [board.arr]
         self.completed = []
 
-    def frontierGen(self):
-        self.frontier.extend(state for state in self.board.neighbor() if state not in self.completed)
+    def frontierGen(self, board):
+        self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
         print(self.frontier)
 
-    def neighbor(self):
-        # fix here
-        i = self.row()
-        j = self.col()
+    def neighbor(self, arr):
+        i = Board.row(arr)
+        j = Board.col(arr)
         neighbor = []
         neighborBoard = []
-        side = int(len(self.arr)**.5)
+        side = int(len(arr)**.5)
 
         for r, c in [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]:
-            if r>=0 and c>=0 and r<len(self.arr)**.5 and c<len(self.arr)**.5:
+            if r>=0 and c>=0 and r<len(arr)**.5 and c<len(arr)**.5:
                 neighbor.append([r,c])
         for r, c in neighbor:
-            tempBoard = self.arr.copy()
+            tempBoard = arr.copy()
             tempBoard[i*(side)+j] , tempBoard[r*(side)+c] = tempBoard[r*(side)+c] , tempBoard[i*(side)+j]
             neighborBoard.append(tempBoard) 
             
         return neighborBoard
+    
+    def printNei(self, arr):
+        for index, item in enumerate(self.neighbor(arr)):
+            print()
+            print(index + 1,":")
+            for i in range(3):
+                for j in range(3):
+                    print(item[j+i*3], end=" ")
+                print()
     
 class Test:
     def __init__(self):
@@ -244,6 +245,6 @@ board = Board()
 # search = Search(board)
 # search.frontierGen()
 
-print(board.neighbor())
+print(Search(board).neighbor(board.arr))
 
-# board.printNei()
+Search(board).printNei(board.arr)
