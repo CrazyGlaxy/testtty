@@ -14,13 +14,13 @@ class Board:
         shuffled = self.arr[:]
         random.shuffle(shuffled)
         self.arr = shuffled
-        self.arr[:] = [1,2,3,4,5,6,7,8,0]
+        # self.arr[:] = [1,2,3,4,0,5,7,8,6]
 
     def parity_checker(self):
         count = 0
         for i in range(len(self.arr)):
             for j in range(i):
-                if self.arr[i] and self.arr[j]> self.arr[i]: count+=1
+                if self.arr[i] and self.arr[j] > self.arr[i]: count+=1
         return count
             
     def print_board(self):
@@ -83,13 +83,30 @@ class Board:
 
 class Search:
     def __init__(self, board: Board):
-        self.board = board
+        self.board = board.arr
         self.frontier = [board.arr]
         self.completed = []
 
-    def frontierGen(self, board):
-        self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
-        print(self.frontier)
+
+    # if not fronttier.pop1st. insert neighbour last
+    # add to complete
+    # check if finished
+    def frontierGen(self):
+        # self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
+        while self.frontier:
+            current = self.frontier.pop(0)
+            print("current:", current)
+            if current == [x for x in range(1,9)] + [0]:
+                print("\n\ncompleted")
+                print("current:", current)
+                break
+            self.completed.append(current)
+            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed)
+            print("frontier size:", len(self.frontier))
+        # print(self.frontier)
+        print(self.completed)
+        print("times:",len(self.completed))
+        print(current)
 
     def neighbor(self, arr):
         i = Board.row(arr)
@@ -242,9 +259,8 @@ class TileGrid:
 # TileGrid()
 board = Board()
 # print(board.parity_checker())
-# search = Search(board)
-# search.frontierGen()
-
-print(Search(board).neighbor(board.arr))
-
-Search(board).printNei(board.arr)
+search = Search(board)
+search.frontierGen()
+# print(Search(board).neighbor(board.arr))
+print(board.parity_checker())
+# Search(board).printNei(board.arr)
