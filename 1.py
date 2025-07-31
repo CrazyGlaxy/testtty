@@ -15,6 +15,8 @@ class Board:
         random.shuffle(shuffled)
         self.arr = shuffled
         # self.arr[:] = [1,2,3,4,0,5,7,8,6]
+        self.arr[:] = [1,2,3,4,5,6,7,0,8]
+
 
     def parity_checker(self):
         count = 0
@@ -86,7 +88,8 @@ class Search:
         self.board = board.arr
         self.frontier = [board.arr]
         self.completed = []
-
+        self.child_parent = [[self.board,-1]]
+        # self.neighbor(self.board)
 
     # if not fronttier.pop1st. insert neighbour last
     # add to complete
@@ -94,19 +97,35 @@ class Search:
     def frontierGen(self):
         # self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
         while self.frontier:
-            current = self.frontier.pop(0)
+            # current = self.frontier.pop(0) #BFS
+            current = self.frontier.pop() #DFS
             print("current:", current)
             if current == [x for x in range(1,9)] + [0]:
                 print("\n\ncompleted")
                 print("current:", current)
                 break
             self.completed.append(current)
-            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed)
+            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed and state not in self.frontier)
             print("frontier size:", len(self.frontier))
         # print(self.frontier)
-        print(self.completed)
-        print("times:",len(self.completed))
-        print(current)
+        # print(self.completed)
+        print("total discovered states:",len(self.completed))
+        print("current state:", current)
+
+    def trackParent(self):
+        trackedList = []
+        current = [i for i in range(1,9)]+[0]
+        while current !=  self.board:
+            trackedList.append(current)
+            for item in self.child_parent:
+                if item[0] == current:
+                    index = item[1]
+                    current = self.child_parent[index][0]
+                    if current == self.board: 
+                        trackedList.append(self.board)
+                        break
+        print("track list:", trackedList)
+
 
     def neighbor(self, arr):
         i = Board.row(arr)
@@ -123,6 +142,11 @@ class Search:
             tempBoard[i*(side)+j] , tempBoard[r*(side)+c] = tempBoard[r*(side)+c] , tempBoard[i*(side)+j]
             neighborBoard.append(tempBoard) 
             
+        # y = next(i for i,j in enumerate(x) if j[0] == [1, 2, 3, 4, 5, 6, 7, 8, 0])
+        index = next(i for i, j  in enumerate(self.child_parent) if j[0] == arr)
+        for i in neighborBoard:
+            self.child_parent.append([i, index])
+            # print(self.child_parent)
         return neighborBoard
     
     def printNei(self, arr):
@@ -133,50 +157,7 @@ class Search:
                 for j in range(3):
                     print(item[j+i*3], end=" ")
                 print()
-    
-class Test:
-    def __init__(self):
-        board = Board()
-        board.print_board()
-        print()
-        print(board.arr)
-        print("Checking Parity:", board.parity_checker(), "\n")
-        print("row: ",board.row())
-        print("col: ", board.col())
-        print("shift left:", board.shift_left())
-        board.print_board()
-        print("shift left:", board.shift_left())
-        board.print_board()
-        print("shift left:", board.shift_left())
-        board.print_board()
-        print()
-        
-        # shift right
-        print("shift right:", board.shift_right())
-        board.print_board()
-        print("shift right:", board.shift_right())
-        board.print_board()
-        print("shift right:", board.shift_right())
-        board.print_board()
-
-        # shift up
-        print("shift up:", board.shift_up())
-        board.print_board()
-        print("shift up:", board.shift_up())
-        board.print_board()
-        print("shift up:", board.shift_up())
-        board.print_board()
-
-        # shift down
-        
-        print("shift down:", board.shift_down())
-        board.print_board()
-        print("shift down:", board.shift_down())
-        board.print_board()
-        print("shift down:", board.shift_down())
-        board.print_board()
-        
-# Test()
+                
 
 class TileGrid:
     board = Board()
@@ -260,7 +241,11 @@ class TileGrid:
 board = Board()
 # print(board.parity_checker())
 search = Search(board)
+
 search.frontierGen()
+search.trackParent()
+# print(search.child_parent)
+# print()
 # print(Search(board).neighbor(board.arr))
-print(board.parity_checker())
+# print(board.parity_checker())
 # Search(board).printNei(board.arr)
