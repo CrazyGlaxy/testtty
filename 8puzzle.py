@@ -15,7 +15,8 @@ class Board:
         random.shuffle(shuffled)
         self.arr = shuffled
         # self.arr[:] = [1,2,3,4,0,5,7,8,6]
-        self.arr[:] = [1,2,3,4,5,6,7,0,8]
+        # self.arr[:] = [1,2,3,4,5,6,7,0,8]
+        # self.arr[:] = [2,0,3,1,5,6,4,7,8]
 
 
     def parity_checker(self):
@@ -97,8 +98,8 @@ class Search:
     def frontierGen(self):
         # self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
         while self.frontier:
-            # current = self.frontier.pop(0) #BFS
-            current = self.frontier.pop() #DFS
+            current = self.frontier.pop(0) #BFS
+            # current = self.frontier.pop() #DFS
             print("current:", current)
             if current == [x for x in range(1,9)] + [0]:
                 print("\n\ncompleted")
@@ -118,12 +119,14 @@ class Search:
         while current !=  self.board:
             trackedList.append(current)
             for item in self.child_parent:
+                if current == self.board: 
+                    trackedList.append(self.board)
+                    break
                 if item[0] == current:
                     index = item[1]
+                    print("index", index) #debug
                     current = self.child_parent[index][0]
-                    if current == self.board: 
-                        trackedList.append(self.board)
-                        break
+                    break
         print("track list:", trackedList)
 
 
