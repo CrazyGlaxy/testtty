@@ -109,8 +109,8 @@ class Search:
                 print("\n\ncompleted")
                 print("current:", current)
                 break
-            self.completed.append(tuple(current))
-            self.frontier.extend(tuple(state) for state in self.neighbor(current) if state not in self.completed and list(state) not in self.frontier)
+            self.completed.append(current)
+            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed and state not in self.frontier)
             print("frontier size:", len(self.frontier))
         # print(self.frontier)
         # print(self.completed)
