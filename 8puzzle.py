@@ -1,6 +1,7 @@
 import random
 import math
 import pyxel
+import time
 
 class Board:
     def __init__(self):
@@ -17,6 +18,9 @@ class Board:
         # self.arr[:] = [1,2,3,4,0,5,7,8,6]
         # self.arr[:] = [1,2,3,4,5,6,7,0,8]
         # self.arr[:] = [2,0,3,1,5,6,4,7,8]
+        # self.arr[:] = [8,3,1,4,6,7,2,5,0]
+        self.arr[:] = [1, 8, 2, 4, 0, 5, 7, 3, 6] #1498
+        # self.arr[:] = [1, 2, 8, 0, 6, 5, 4, 7, 3] #5527
 
 
     def parity_checker(self):
@@ -88,7 +92,7 @@ class Search:
     def __init__(self, board: Board):
         self.board = board.arr
         self.frontier = [board.arr]
-        self.completed = []
+        self.completed = [] 
         self.child_parent = [[self.board,-1]]
         # self.neighbor(self.board)
 
@@ -105,8 +109,8 @@ class Search:
                 print("\n\ncompleted")
                 print("current:", current)
                 break
-            self.completed.append(current)
-            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed and state not in self.frontier)
+            self.completed.append(tuple(current))
+            self.frontier.extend(state for state in self.neighbor(current) if state not in list(self.completed) and state not in self.frontier)
             print("frontier size:", len(self.frontier))
         # print(self.frontier)
         # print(self.completed)
@@ -115,7 +119,7 @@ class Search:
 
     def trackParent(self):
         trackedList = []
-        current = [i for i in range(1,9)]+[0]
+        current = [i for i in range(1,9)]+[0] #fix
         while current !=  self.board:
             trackedList.append(current)
             for item in self.child_parent:
@@ -128,6 +132,8 @@ class Search:
                     current = self.child_parent[index][0]
                     break
         print("track list:", trackedList)
+        print("Steps:", len(trackedList))
+
 
 
     def neighbor(self, arr):
@@ -241,6 +247,8 @@ class TileGrid:
                 pyxel.rectb(x, y, self.tile_size, self.tile_size, 1)
 
 # TileGrid()
+start = time.time()
+
 board = Board()
 # print(board.parity_checker())
 search = Search(board)
@@ -252,3 +260,6 @@ search.trackParent()
 # print(Search(board).neighbor(board.arr))
 # print(board.parity_checker())
 # Search(board).printNei(board.arr)
+
+end = time.time()
+print("⏱ Time taken:", end - start, "seconds")
