@@ -19,8 +19,9 @@ class Board:
         # self.arr[:] = [1,2,3,4,5,6,7,0,8]
         # self.arr[:] = [2,0,3,1,5,6,4,7,8]
         # self.arr[:] = [8,3,1,4,6,7,2,5,0]
-        self.arr[:] = [1, 8, 2, 4, 0, 5, 7, 3, 6] #1498
+        # self.arr[:] = [1, 8, 2, 4, 0, 5, 7, 3, 6] #1498
         # self.arr[:] = [1, 2, 8, 0, 6, 5, 4, 7, 3] #5527
+        self.arr[:] = [2, 7, 1, 0, 6, 4, 3, 5, 8] #174037
 
 
     def parity_checker(self):
@@ -90,10 +91,10 @@ class Board:
 
 class Search:
     def __init__(self, board: Board):
-        self.board = board.arr
-        self.frontier = [board.arr]
-        self.completed = [] 
-        self.child_parent = [[self.board,-1]]
+        self.board = tuple(board.arr)
+        self.frontier = [self.board]
+        self.completed = set()
+        self.child_parent = {self.board:-1}
         # self.neighbor(self.board)
 
     # if not fronttier.pop1st. insert neighbour last
@@ -105,12 +106,12 @@ class Search:
             current = self.frontier.pop(0) #BFS
             # current = self.frontier.pop() #DFS
             print("current:", current)
-            if current == [x for x in range(1,9)] + [0]:
+            if current == tuple(range(1, 9)) + (0,):
                 print("\n\ncompleted")
                 print("current:", current)
                 break
-            self.completed.append(current)
-            self.frontier.extend(state for state in self.neighbor(current) if state not in self.completed and state not in self.frontier)
+            self.completed.add(current)
+            self.frontier.extend(tuple(state) for state in self.neighbor(current) if tuple(state) not in self.completed and tuple(state) not in self.frontier)
             print("frontier size:", len(self.frontier))
         # print(self.frontier)
         # print(self.completed)
@@ -119,18 +120,11 @@ class Search:
 
     def trackParent(self):
         trackedList = []
-        current = [i for i in range(1,9)]+[0] #fix
+        current = tuple(range(1, 9)) + (0,) #fix
         while current !=  self.board:
             trackedList.append(current)
-            for item in self.child_parent:
-                if current == self.board: 
-                    trackedList.append(self.board)
-                    break
-                if item[0] == current:
-                    index = item[1]
-                    print("index", index) #debug
-                    current = self.child_parent[index][0]
-                    break
+            current =  self.child_parent[current]
+        trackedList.append(current)
         print("track list:", trackedList)
         print("Steps:", len(trackedList))
 
@@ -147,14 +141,13 @@ class Search:
             if r>=0 and c>=0 and r<len(arr)**.5 and c<len(arr)**.5:
                 neighbor.append([r,c])
         for r, c in neighbor:
-            tempBoard = arr.copy()
+            tempBoard = list(arr).copy()
             tempBoard[i*(side)+j] , tempBoard[r*(side)+c] = tempBoard[r*(side)+c] , tempBoard[i*(side)+j]
             neighborBoard.append(tempBoard) 
             
-        # y = next(i for i,j in enumerate(x) if j[0] == [1, 2, 3, 4, 5, 6, 7, 8, 0])
-        index = next(i for i, j  in enumerate(self.child_parent) if j[0] == arr)
         for i in neighborBoard:
-            self.child_parent.append([i, index])
+            if tuple(i) not in self.child_parent:
+                self.child_parent[tuple(i)] = arr
             # print(self.child_parent)
         return neighborBoard
     
