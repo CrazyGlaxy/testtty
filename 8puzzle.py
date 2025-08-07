@@ -19,9 +19,9 @@ class Board:
         # self.arr[:] = [1,2,3,4,5,6,7,0,8]
         # self.arr[:] = [2,0,3,1,5,6,4,7,8]
         # self.arr[:] = [8,3,1,4,6,7,2,5,0]
-        # self.arr[:] = [1, 8, 2, 4, 0, 5, 7, 3, 6] #1498
-        # self.arr[:] = [1, 2, 8, 0, 6, 5, 4, 7, 3] #5527
-        self.arr[:] = [2, 7, 1, 0, 6, 4, 3, 5, 8] #174037
+        self.arr[:] = [1, 8, 2, 4, 0, 5, 7, 3, 6] #1498
+        self.arr[:] = [1, 2, 8, 0, 6, 5, 4, 7, 3] #5527
+        # self.arr[:] = [2, 7, 1, 0, 6, 4, 3, 5, 8] #174037
 
 
     def parity_checker(self):
@@ -93,6 +93,7 @@ class Search:
     def __init__(self, board: Board):
         self.board = tuple(board.arr)
         self.frontier = [self.board]
+        self.frontier_set = {self.board}
         self.completed = set()
         self.child_parent = {self.board:-1}
         # self.neighbor(self.board)
@@ -104,15 +105,16 @@ class Search:
         # self.frontier.extend(state for state in self.neighbor() if state not in self.completed)
         while self.frontier:
             current = self.frontier.pop(0) #BFS
+            self.frontier_set.discard(current)
             # current = self.frontier.pop() #DFS
-            print("current:", current)
+            # print("current:", current)
             if current == tuple(range(1, 9)) + (0,):
                 print("\n\ncompleted")
                 print("current:", current)
                 break
             self.completed.add(current)
-            self.frontier.extend(tuple(state) for state in self.neighbor(current) if tuple(state) not in self.completed and tuple(state) not in self.frontier)
-            print("frontier size:", len(self.frontier))
+            self.frontier.extend(tuple(state) for state in self.neighbor(current) if tuple(state) not in self.completed and tuple(state) not in self.frontier_set)
+            # print("frontier size:", len(self.frontier))
         # print(self.frontier)
         # print(self.completed)
         print("total discovered states:",len(self.completed))

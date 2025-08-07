@@ -9,7 +9,7 @@ class Board:
     def generate(self):
         self.arr = [i for i in range(9)]
         random.shuffle(self.arr)
-
+        self.arr[:] = [2, 7, 1, 0, 6, 4, 3, 5, 8] #174037
     def parity_checker(self):
         count = 0
         for i in range(len(self.arr)):
@@ -50,7 +50,7 @@ class Search:
                 if neighbor not in self.completed and neighbor not in self.frontier_set:
                     self.frontier.append(neighbor)
                     self.frontier_set.add(neighbor)
-
+            # print("frontier size:", len(self.frontier))
         print("✅ Total discovered states:", len(self.completed))
 
     def neighbor(self, arr):
